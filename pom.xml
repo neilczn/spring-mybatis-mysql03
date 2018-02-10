@@ -1,0 +1,171 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.equality</groupId>
+  <artifactId>spring-mybatis-mysql03</artifactId>
+  <packaging>war</packaging>
+  <version>1.0.0</version>
+  <name>spring-mybatis-mysql03 Maven Webapp</name>
+  <url>http://maven.apache.org</url>
+  
+  <properties>
+    <commons-logging>1.2</commons-logging>
+	<mysql-connector-java>6.0.6</mysql-connector-java>
+  	<mybatis.version>3.4.4</mybatis.version>
+	<mybatis-spring>1.3.0</mybatis-spring>
+  	<spring.version>4.3.13.RELEASE</spring.version>
+  	<c3p0>0.9.1.2</c3p0>
+  </properties>
+  
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.10</version>
+      <scope>test</scope>
+    </dependency>
+    
+    
+    <dependency>  
+      <groupId>org.slf4j</groupId>  
+      <artifactId>slf4j-log4j12</artifactId>  
+      <version>1.7.21</version>  
+    </dependency>
+    
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>1.7.21</version>
+    </dependency>
+    
+    <dependency>  
+      <groupId>log4j</groupId>  
+      <artifactId>log4j</artifactId>  
+      <version>1.2.17</version>  
+    </dependency>
+    
+    <!--配置mybatis需要的依赖包-->
+    
+    <!-- <dependency>
+       <groupId>asm</groupId>
+       <artifactId>asm</artifactId>
+       <version>3.3.1</version>
+     </dependency> -->
+     
+     <dependency>
+       <groupId>cglib</groupId>
+       <artifactId>cglib</artifactId>
+       <version>2.2.2</version>
+     </dependency>
+    
+    <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>${commons-logging}</version>
+    </dependency>
+    
+    <dependency>
+       <groupId>org.javassist</groupId>
+       <artifactId>javassist</artifactId>
+       <version>3.17.1-GA</version>
+    </dependency>
+    
+    <dependency>  
+         <groupId>mysql</groupId>  
+         <artifactId>mysql-connector-java</artifactId>  
+         <version>${mysql-connector-java}</version>  
+     </dependency>
+     
+     <dependency>  
+       <groupId>org.mybatis</groupId>  
+       <artifactId>mybatis</artifactId>  
+       <version>${mybatis.version}</version>  
+    </dependency> 
+    
+    <dependency>  
+        <groupId>org.mybatis</groupId>  
+        <artifactId>mybatis-spring</artifactId>  
+        <version>${mybatis-spring}</version>  
+    </dependency>
+    
+    <dependency>  
+        <groupId>com.github.pagehelper</groupId>  
+        <artifactId>pagehelper</artifactId>  
+        <version>5.1.2</version>  
+    </dependency> 
+    
+    <!--配置spring需要的依赖包-->
+    <dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-core</artifactId>
+		<version>${spring.version}</version>
+	</dependency>
+    <dependency>  
+        <groupId>org.springframework</groupId>  
+        <artifactId>spring-context</artifactId>  
+        <version>${spring.version}</version>  
+    </dependency>
+    
+    <dependency>  
+	    <groupId>org.springframework</groupId>  
+	    <artifactId>spring-orm</artifactId>  
+	    <version>${spring.version}</version>  
+    </dependency> 
+    
+    <!-- <dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-aop</artifactId>
+		<version>${spring.version}</version>
+	</dependency> -->
+	
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-aspects</artifactId>
+		<version>${spring.version}</version>
+	</dependency>
+    
+    <dependency>
+        <groupId>c3p0</groupId>
+        <artifactId>c3p0</artifactId>
+        <version>${c3p0}</version>
+    </dependency>
+    
+    <!--配置springmvc需要的依赖包-->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    
+    <!-- <dependency>
+	    <groupId>org.codehaus.jackson</groupId>
+	    <artifactId>jackson-mapper-asl</artifactId>
+	    <version>1.9.13</version>
+    </dependency> -->
+    
+    <dependency>
+	    <groupId>com.fasterxml.jackson.core</groupId>
+	    <artifactId>jackson-databind</artifactId>
+	    <version>2.9.4</version>
+    </dependency>
+   
+  </dependencies>
+  <build>
+    <finalName>spring-mybatis-mysql03</finalName>
+    
+    <!-- 解决Java Resources红色X的其中一个设置 -->
+    <plugins>
+    	<plugin>  
+	        <groupId>org.apache.maven.plugins</groupId>  
+	        <artifactId>maven-compiler-plugin</artifactId>  
+	        <version>3.1</version>  
+	        <configuration>  
+	            <source>1.8</source>  
+	            <target>1.8</target>  
+	        </configuration>  
+        </plugin>
+    </plugins>
+    
+  </build>
+  
+</project>

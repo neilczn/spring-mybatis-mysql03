@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans 
+      xmlns="http://www.springframework.org/schema/beans"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:context="http://www.springframework.org/schema/context"
+      xmlns:aop="http://www.springframework.org/schema/aop"
+      xmlns:tx="http://www.springframework.org/schema/tx"
+	  xmlns:mvc="http://www.springframework.org/schema/mvc"
+		
+      xsi:schemaLocation="
+	
+	  http://www.springframework.org/schema/beans 
+	  http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	  
+	  http://www.springframework.org/schema/context
+      http://www.springframework.org/schema/context/spring-context-3.0.xsd
+ 	  
+	  http://www.springframework.org/schema/aop 
+	  http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+	  
+	  http://www.springframework.org/schema/tx
+      http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+    
+      http://www.springframework.org/schema/mvc
+      http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+        
+      ">
+      
+      <!-- 1.配置数据库相关参数properties的属性：${url} -->
+	  <context:property-placeholder location="classpath:jdbc.properties" />
+      
+      <!-- 配置C3P0连接池,目的：管理数据库连接 -->
+      <bean id="comboPooledDataSourceID" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+      	<property name="driverClass" value="${mysql.driver}"></property>
+      	<property name="jdbcUrl" value="${mysql.url}"></property>
+      	<property name="User" value="${mysql.username}"></property>
+      	<property name="password" value="${mysql.password}"></property>
+      </bean>
+      
+      <!-- 配置SqlSessionFactoryBean，目的：加载mybaits配置文件和映射文件，即替代原Mybatis工具类的作用 -->
+      <bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+      		<property name="configLocation" value="classpath:mybatis.xml"/>
+      		<property name="dataSource" ref="comboPooledDataSourceID"/>
+      		<property name="plugins">
+		        <array>
+		            <bean class="com.github.pagehelper.PageInterceptor">
+		                <!-- 这里的几个配置主要演示如何使用，如果不理解，一定要去掉下面的配置 -->
+		                <property name="properties">
+		                    <value>
+		                        <!-- helperDialect=mysql -->
+		                    </value>
+		                </property>
+		            </bean>
+		        </array>
+    		</property>
+      </bean>
+      
+      <!-- 配置扫描MapperScannerConfigurer 此时在mybatis中配置mappers是无效的  -->
+	  <bean id="mapperScannerConfigurerID" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+			<property name="basePackage" value="com.mybatis.mapper"></property>
+			<!-- 注意:如果需要加载使用jdbc.properties，需要注释掉sqlSessionFactory
+				在spring里使用org.mybatis.spring.mapper.MapperScannerConfigurer 进行自动扫描的时候，
+				设置了sqlSessionFactory 的话，可能会导致PropertyPlaceholderConfigurer失效，
+				也就是用${jdbc.username}这样之类的表达式，将无法获取到properties文件里的内容。 
+				导致这一原因是因为，MapperScannerConigurer实际是在解析加载bean定义阶段的，
+				这个时候要是设置sqlSessionFactory的话，会导致提前初始化一些类，这个时候，
+				PropertyPlaceholderConfigurer还没来得及替换定义中的变量，导致把表达式当作字符串复制了。
+				 但如果不设置sqlSessionFactory 属性的话，就必须要保证sessionFactory在spring中名称一定要是sqlSessionFactory ，
+				 否则就无法自动注入。又或者直接定义 MapperFactoryBean ，再或者放弃自动代理接口方式。 
+			-->
+			<!-- <property name="sqlSessionFactory" ref="sqlSessionFactoryBean"></property> -->
+	  </bean>
+	  
+	  <!-- 配置Mybatis的事务管理器，即因为Mybatis底层用的是JDBC事务管事器，所以在这里依然配置JDBC事务管理器 -->
+      <bean id="dataSourceTransactionManagerID" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+      		<property name="dataSource" ref="comboPooledDataSourceID"/>
+      </bean>
+      
+      <!-- 配置事务通知，即让哪些方法需要事务支持 -->
+      <tx:advice id="tx" transaction-manager="dataSourceTransactionManagerID">
+      		<tx:attributes>
+      			<tx:method name="*" propagation="REQUIRED"/>
+      		</tx:attributes>
+      </tx:advice>
+      
+      <!-- 配置事务切面，即让哪些包下的类需要事务 -->
+      <aop:config>
+      	<aop:pointcut id="pointcut" expression="execution(* com.mybatis.service.*Service.*(..))" />
+      	<aop:advisor advice-ref="tx" pointcut-ref="pointcut"/>
+      </aop:config>
+      
+      <!-- 启用了对类包进行扫描以实施注释驱动 Bean 定义的功能，
+                   同时还启用了注释驱动自动注入的功能（即还隐式地在内部注册了 AutowiredAnnotationBeanPostProcessor 
+                   和  CommonAnnotationBeanPostProcessor），因此当使用 <context:component-scan/> 后，
+                   就可以将 <context:annotation-config/> 移除了 
+      -->
+      <context:component-scan base-package="com.mybatis.service.impl">
+      </context:component-scan>
+      
+      <!-- mvc -->
+      
+       
+      <!-- 这两个bean处理请求映射的，在bean中默认会创建一个使用HeaderContentNegotiationStrategy的
+      	ContentNegotiationManager，这样就能解析htttp请求头Accept中的类型了。但要注意的是，
+      	上述两个bean要定义在<mvc:annotation-driven/>之前。为什么呢？
+      	因为<mvc:annotation-driven/>会注册RequestMappingHandlerMapping, RequestMappingHandlerAdapter以及
+      	ExceptionHandlerExceptionResolver等等的东西，如果上述两个bean定义放在<mvc:annotation-driven/>之后就不起作用了。
+       -->
+      <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"/>
+      <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+            </list>
+        </property>
+      </bean>
+      
+      <context:component-scan base-package="com.mybatis.controller"></context:component-scan>
+      
+ </beans>
+      
