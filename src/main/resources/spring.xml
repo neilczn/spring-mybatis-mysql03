@@ -97,9 +97,9 @@
       <context:component-scan base-package="com.mybatis.service.impl">
       </context:component-scan>
       
-      <!-- mvc -->
       
-       
+      
+      <!-- mvc -->             
       <!-- 这两个bean处理请求映射的，在bean中默认会创建一个使用HeaderContentNegotiationStrategy的
       	ContentNegotiationManager，这样就能解析htttp请求头Accept中的类型了。但要注意的是，
       	上述两个bean要定义在<mvc:annotation-driven/>之前。为什么呢？
@@ -116,6 +116,25 @@
       </bean>
       
       <context:component-scan base-package="com.mybatis.controller"></context:component-scan>
+      
+      <!-- 映射器
+   		 BeanNameUrlHandlerMapping表示将bean标签的name属性当做URL请求
+   		 即使不配置，则默认用此映射器  可选
+    -->  
+      <!-- <bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
+      		<property name="interceptors">
+      			<list>
+      				<ref bean="handlerInterceptor1"/>
+      			</list>
+      		</property>
+      </bean> -->
+      
+      <!-- 拦截器配置 -->
+      <mvc:interceptors>  
+        <bean class="com.mybatis.interceptor.HandlerInterceptor1"/>
+      </mvc:interceptors>  
+      
+      
       
  </beans>
       

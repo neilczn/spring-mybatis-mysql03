@@ -16,7 +16,8 @@
   </servlet>
   <servlet-mapping>
   	<servlet-name>DispatcherServlet</servlet-name>
-  	<url-pattern>*.do</url-pattern>
+  	<url-pattern>/</url-pattern>
+  	<!-- <url-pattern>*.do</url-pattern> -->
   </servlet-mapping>
   
   <!-- 注册spring针对post请求的中文乱码问题 -->
