@@ -86,7 +86,7 @@ public class BlogMapperTest {
 	@Test
 	public void testFindById3() {
 		blogMapper = (BlogMapper) ac.getBean("blogMapper");
-		Blog blog = blogMapper.findById(3);
+		Blog blog = blogMapper.findById(3000);
 		System.out.println(blog);
 	}
 	
